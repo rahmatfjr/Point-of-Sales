@@ -10,4 +10,12 @@ router.put('/login', function(req, res, next) {
   res.render('index', { title: 'Express' });
 });
 
+router.get('/register', function(req, res, next) {
+  res.render('index', { title: 'Express' });
+});
+
+router.put('/register', function(req, res, next) {
+  res.render('index', { title: 'Express' });
+});
+
 module.exports = router;
