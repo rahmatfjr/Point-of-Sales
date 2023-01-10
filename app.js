@@ -3,8 +3,19 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var flash = require('connect-flash');
 
-var indexRouter = require('./routes/index');
+const { Pool } = require('pg')
+const pool = new Pool({
+  user: 'rahmat',
+  host: 'localhost',
+  database: 'posdbs',
+  password: '1234',
+  port: 5432,
+})
+
+
+var indexRouter = require('./routes/index')(pool);
 var usersRouter = require('./routes/users');
 
 var app = express();
