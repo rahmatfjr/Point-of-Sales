@@ -4,6 +4,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var flash = require('connect-flash');
+var session = require('express-session')
 
 const { Pool } = require('pg')
 const pool = new Pool({
@@ -29,6 +30,12 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(session({
+  secret: 'Rubicamp',
+  resave: false,
+  saveUninitialized: true
+}));
+app.use(flash());
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);

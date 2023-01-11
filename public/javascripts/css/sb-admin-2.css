@@ -10862,14 +10862,18 @@ a:focus {
 
 .bg-login-image {
   background: url("/images/bootstrap-logo.jpeg");
-  background-position: center;
-  background-size: cover;
+  background-position: 3mm;
+  background-repeat: repeat-x;
+  background-size: 12cm;
+  background-color: #000;
 }
 
 .bg-register-image {
   background: url("/images/bootstrap-logo.jpeg");
-  background-position: center;
-  background-size: cover;
+  background-position: 3mm;
+  background-repeat: repeat-x;
+  background-size: 12cm;
+  background-color: #000;
 }
 
 .bg-password-image {
