@@ -8,49 +8,53 @@ const { isLoggedIn } = require('../helpers/utils')
 module.exports = function (db) {
 
 
-
-
+  //router login
   router.get('/login', function (req, res, next) {
-    res.render('login', { info: req.flash('info') });
+    res.render('operator/login', { info: req.flash('info') });
   });
 
-  router.post('/login', function (req, res, next) {
+  router.post('/login', async function (req, res, next) {
+
     const { email, password } = req.body
-
-    // console.log('ini data', email)
-    // console.log('ini data lagi', password)
-
-    db.query('SELECT * FROM users WHERE email = $1', [email], (err, data) => {
-      // console.log(data, 'string data')
-
-      if (err) return res.send(err)
-
-      if (data.rows.length == 0) {
-        req.flash('info',"email yang di masukkan salah")
-        return res.redirect('/login')
-      }
-
-
-      bcrypt.compare(password, data.rows[0].password, function (err, result) {
+    try {
+      db.query('SELECT * FROM users WHERE email = $1', [email], (err, data) => {
+        // console.log(data, 'string data')
 
         if (err) return res.send(err)
 
-        if (!result) {
-          req.flash('info',"password salah")
+        if (data.rows.length == 0) {
+          req.flash('info', "email yang di masukkan salah")
           return res.redirect('/login')
         }
 
-        req.session.user = data.rows[0]
-        delete data.rows[0].password
-        // console.log(req.session.user);
 
-        res.redirect('/home')
-      });
-    })
+        bcrypt.compare(password, data.rows[0].password, function (err, result) {
+
+          if (err) return res.send(err)
+
+          if (!result) {
+            req.flash('info', "password salah")
+            return res.redirect('/login')
+          }
+
+          req.session.user = data.rows[0]
+          delete data.rows[0].password
+          // console.log(req.session.user);
+
+          res.redirect('/home')
+        });
+      })
+    }
+    catch (err) {
+      console.log(err)
+      res.send(err)
+    }
   });
 
+
+  //router register
   router.get('/register', function (req, res) {
-    res.render('register');
+    res.render('operator/register');
   });
 
   router.post('/register', function (req, res) {
@@ -76,38 +80,38 @@ module.exports = function (db) {
     })
   });
 
+
+  //router home in dashboard
   router.get('/home', isLoggedIn, function (req, res) {
-    res.render('home', {
-      user: req.session.user
-
-    });
-
-  });
-  router.get('/home', function (req, res, next) {
-    res.render('');
-  });
-
-  router.get('/user', isLoggedIn, function (req, res) {
-    res.render('user', {
+    res.render('users/home', {
+      currentPage: 'home',
       user: req.session.user
 
     });
 
   });
 
-  router.get('/user', function (req, res, next) {
-    res.render('');
+  //router user in dashboard
+  router.get('/user', isLoggedIn, async function (req, res) {
+    try {
+      const { rows } = await db.query('Select * From users')
+      res.render('users/users', {
+        currentPage: 'user',
+        user: req.session.user,
+        rows
+      })
+    }
+    catch (e) {
+      console.log(e)
+
+    }
   });
 
-
+  //router logout
   router.get('/logout', isLoggedIn, function (req, res, next) {
     req.session.destroy(function (err) {
-      res.redirect('/login')
+      res.redirect('operator/login')
     })
-  });
-
-  router.get('/home', function (req, res, next) {
-    res.render('');
   });
 
   return router;

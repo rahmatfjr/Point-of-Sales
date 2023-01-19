@@ -1,0 +1,74 @@
+<%- include('../partials/header') %>
+
+    <%- include('../partials/menu') %>
+
+        <div class="container-fluid">
+
+            <!-- Page Heading -->
+            <h1 class="h3 mb-2 text-gray-800">Users</h1>
+            <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                <span>this is data of Users</span>
+            </div>
+
+            <!-- DataTales Example -->
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <a href="/users/add" class="btn btn-primary btn-icon-split">
+                        <span class="icon text-white-50">
+                            <i class="fas fa-plus"></i>
+                        </span>
+                        <span class="text">Add</span>
+                    </a>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>User ID</th>
+                                    <th>Email</th>
+                                    <th>Name</th>
+                                    <th>Role</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tfoot>
+                                <tr>
+                                    <th>User ID</th>
+                                    <th>Email</th>
+                                    <th>Name</th>
+                                    <th>Role</th>
+                                    <th>Action</th>
+                                </tr>
+                            </tfoot>
+                            <tbody>
+                                <% rows.forEach( item=> { %>
+                                    <tr>
+                                        <td>
+                                            <%= item.users_id %>
+                                        </td>
+                                        <td>
+                                            <%= item.email %>
+                                        </td>
+                                        <td>
+                                            <%= item.name %>
+                                        </td>
+                                        <td>
+                                            <%= item.role %>
+                                        </td>
+                                        <td></td>
+                                    </tr>
+                                    <% }) %>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <!-- /.container-fluid -->
+
+        </div>
+        <!-- End of Main Content -->
+
+        <%- include('../partials/footer') %>
