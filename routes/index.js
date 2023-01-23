@@ -91,26 +91,11 @@ module.exports = function (db) {
 
   });
 
-  //router user in dashboard
-  router.get('/user', isLoggedIn, async function (req, res) {
-    try {
-      const { rows } = await db.query('Select * From users')
-      res.render('users/users', {
-        currentPage: 'user',
-        user: req.session.user,
-        rows
-      })
-    }
-    catch (e) {
-      console.log(e)
-
-    }
-  });
 
   //router logout
   router.get('/logout', isLoggedIn, function (req, res, next) {
     req.session.destroy(function (err) {
-      res.redirect('operator/login')
+      res.redirect('/login')
     })
   });
 

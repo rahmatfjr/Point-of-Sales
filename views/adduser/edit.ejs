@@ -4,39 +4,36 @@
 
         <div class="container-fluid">
 
-            <!-- Page Heading -->
-            <h1 class="h3 mb-2 text-gray-800">Users</h1>
-            <!-- <div class="d-sm-flex align-items-center justify-content-between mb-4">
+            <% rows.forEach((item)=> { %>
+
+                <!-- Page Heading -->
+                <h1 class="h3 mb-2 text-gray-800">Users</h1>
+                <!-- <div class="d-sm-flex align-items-center justify-content-between mb-4">
                     <span>this is data of Users</span>
                 </div> -->
-            <form action="" method="post">
+                <form action="" method="post">
 
-                <!-- DataTales Example -->
-                <div class="card shadow mb-4">
-                    <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-primary">Form Add</h6>
-                    </div>
-                    <div class="card-body">
-                        <div class="table">
-                            <!-- <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0"> -->
+                    <!-- DataTales Example -->
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">Form Edit</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="table">
+                                <!-- <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0"> -->
 
                                 <div class="mb-3 row">
                                     <label for="email" class="col-sm-2 col-form-label">Email</label>
                                     <div class="col-sm-10">
                                         <input type="text" class="form-control" id="email" name="email"
-                                            placeholder="email@example.com">
+                                            value="<%= item.email %>">
                                     </div>
                                 </div>
                                 <div class="mb-3 row">
                                     <label for="name" class="col-sm-2 col-form-label">Name</label>
                                     <div class="col-sm-10">
-                                        <input type="text" class="form-control" id="name" name="name">
-                                    </div>
-                                </div>
-                                <div class="mb-3 row">
-                                    <label for="password" class="col-sm-2 col-form-label">Password</label>
-                                    <div class="col-sm-10">
-                                        <input type="password" class="form-control" id="password" name="password">
+                                        <input type="text" class="form-control" id="name" name="name"
+                                            value="<%= item.name %>">
                                     </div>
                                 </div>
                                 <div class="mb-3 row">
@@ -44,33 +41,34 @@
                                     <div class="col-sm-10">
                                         <div class="form-check">
                                             <input class="form-check-input" type="radio" name="role" id="operator"
-                                                value="operator" checked>
+                                                value="operator" <%=item.role=="operator" ? "checked" : "" %> >
                                             <label class="form-check-label" for="operator">
                                                 operator
                                             </label>
                                         </div>
                                         <div class="form-check">
                                             <input class="form-check-input" type="radio" name="role" id="admin"
-                                                value="admin">
+                                                value="admin" <%=item.role=="admin" ? "checked" : "" %>>
                                             <label class="form-check-label" for="admin">
                                                 admin
                                             </label>
                                         </div>
                                     </div>
                                 </div>
-                            <!-- </table> -->
+                                <!-- </table> -->
+                            </div>
+                        </div>
+                        <div class="card-footer py-3">
+                            <button type="submit" class="btn btn-info btn-icon-split">
+                                <span class="icon">
+                                    <i class="fas fa-trash"></i>
+                                </span>
+                                <span class="text">Save</span>
+                            </button>
                         </div>
                     </div>
-                    <div class="card-footer py-3">
-                        <button type="submit" class="btn btn-info btn-icon-split">
-                            <span class="icon">
-                                <i class="fas fa-trash"></i>
-                            </span>
-                            <span class="text">Save</span>
-                        </button>
-                    </div>
-                </div>
-            </form>
+                </form>
+                <% }) %>
         </div>
         <!-- /.container-fluid -->
 
