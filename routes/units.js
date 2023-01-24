@@ -11,6 +11,5 @@ module.exports = function (db) {
             rows
         })
     })
-
     return router;
 }
