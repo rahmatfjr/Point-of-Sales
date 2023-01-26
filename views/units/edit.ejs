@@ -7,7 +7,7 @@
             <% rows.forEach((item)=> { %>
 
                 <!-- Page Heading -->
-                <h1 class="h3 mb-2 text-gray-800">Users</h1>
+                <h1 class="h3 mb-2 text-gray-800">Units</h1>
                 <!-- <div class="d-sm-flex align-items-center justify-content-between mb-4">
                     <span>this is data of Users</span>
                 </div> -->
@@ -23,10 +23,10 @@
                                 <!-- <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0"> -->
 
                                 <div class="mb-3 row">
-                                    <label for="email" class="col-sm-2 col-form-label">Email</label>
+                                    <label for="unit" class="col-sm-2 col-form-label">Unit</label>
                                     <div class="col-sm-10">
-                                        <input type="text" class="form-control" id="email" name="email"
-                                            value="<%= item.email %>">
+                                        <input type="text" class="form-control" id="unit" name="unit"
+                                            value="<%= item.unit %>">
                                     </div>
                                 </div>
                                 <div class="mb-3 row">
@@ -37,22 +37,9 @@
                                     </div>
                                 </div>
                                 <div class="mb-3 row">
-                                    <label for="role" class="col-sm-2 col-form-label">Role</label>
+                                    <label for="note" class="col-sm-2 form-label">Note</label>
                                     <div class="col-sm-10">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="role" id="operator"
-                                                value="operator" <%=item.role=="operator" ? "checked" : "" %> >
-                                            <label class="form-check-label" for="operator">
-                                                operator
-                                            </label>
-                                        </div>
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="role" id="admin"
-                                                value="admin" <%=item.role=="admin" ? "checked" : "" %>>
-                                            <label class="form-check-label" for="admin">
-                                                admin
-                                            </label>
-                                        </div>
+                                        <textarea class=" form-control" name="note" id="note"  rows="2"  ><%= item.note %></textarea>
                                     </div>
                                 </div>
                                 <!-- </table> -->
@@ -65,7 +52,7 @@
                                 </span>
                                 <span class="text">Save</span>
                             </button>
-                            <a href="/users" class="btn btn-warning btn-icon-split">
+                            <a href="/units" class="btn btn-warning btn-icon-split">
                                 <span class="icon">
                                     <i class="fas fa-trash"></i>
                                 </span>
