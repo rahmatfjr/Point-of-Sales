@@ -8,7 +8,7 @@ module.exports = function (db) {
         try {
             const { rows } = await db.query('SELECT * FROM units')
             res.render('units/list', {
-                currentPage: 'user',
+                currentPage: 'units',
                 user: req.session.user,
                 rows
             })
@@ -62,11 +62,11 @@ module.exports = function (db) {
 
     router.post('/add', isLoggedIn, async function (req, res) {
         const { unit, name, note } = req.body
-        console.log(unit, name, note)
+        // console.log(unit, name, note)
 
         try {
             const { rows } = await db.query('INSERT INTO units(unit, name, note) VALUES ($1, $2, $3)', [unit, name, note])
-            console.log(rows)
+            // console.log(rows)
             res.redirect('/units')
         }
         catch (e) {
@@ -76,7 +76,7 @@ module.exports = function (db) {
 
     router.get('/edit/:unit', async function (req, res) {
         const unit = req.params.unit
-        console.log(unit, 'gagal ambil unit')
+        // console.log(unit, 'gagal ambil unit')
         try {
           const { rows } = await db.query('SELECT * FROM units WHERE unit = $1', [unit])
           // console.log(rows)
@@ -97,7 +97,7 @@ module.exports = function (db) {
         const { name, note } = req.body
         try {
           const { rows } = await db.query('UPDATE units SET name= $1, note= $2  WHERE unit= $3',[ name, note, unit])
-          console.log(rows, 'udh di ubah');
+        //   console.log(rows, 'udh di ubah');
           res.redirect('/units')
         }
         catch (e) {

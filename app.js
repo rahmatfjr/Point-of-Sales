@@ -5,6 +5,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var flash = require('connect-flash');
 var session = require('express-session')
+const fileUpload = require('express-fileupload');
 
 const { Pool } = require('pg')
 const pool = new Pool({
@@ -19,6 +20,7 @@ const pool = new Pool({
 var indexRouter = require('./routes/index')(pool);
 var usersRouter = require('./routes/users')(pool);
 var unitsRouter = require('./routes/units')(pool);
+var goodsRouter = require('./routes/goods')(pool);
 
 var app = express();
 
@@ -37,10 +39,12 @@ app.use(session({
   saveUninitialized: true
 }));
 app.use(flash());
+app.use(fileUpload());
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/units', unitsRouter);
+app.use('/goods', goodsRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
