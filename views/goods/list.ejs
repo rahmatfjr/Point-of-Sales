@@ -72,15 +72,20 @@
                         { "data": "unit" },
                         { "data": "purchaseprice" },
                         { "data": "sellingprice" },
-                        { "data": "picture" },
+                        {
+                            "data": "picture",
+                            render: function (data, type) {
+                                return `<img src="/images/upload/${data}" style="width: 50px" />`
+                            }
+                        },
                         {
                             "data": "barcode",
                             render: function (data, type) {
+                                console.log(data)
                                 return `
 
                                 <a class="btn btn-success btn-circle" href="/goods/edit/${data}"><i class="far fa-edit"></i></a>
 
-                                  
                                 <a class="btn btn-danger btn-circle" data-toggle="modal"
                                   data-target="#delete${data}" href="/goods/delete/${data}"><i class="fas fa-trash"></i></a>
 
@@ -102,7 +107,6 @@
                                             </div>
                                         </div>
                                     </div>
-
                                 `
                             }
                         },

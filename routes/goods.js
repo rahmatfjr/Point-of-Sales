@@ -54,7 +54,7 @@ module.exports = function (db) {
 
     //add units
     router.get('/add', isLoggedIn, async function (req, res) {
-        try{
+        try {
             const { rows } = await db.query('SELECT unit, name FROM units')
             res.render('goods/add', {
                 user: req.session.user,
@@ -62,55 +62,105 @@ module.exports = function (db) {
                 rows: rows
             })
         }
-        catch(e){
+        catch (e) {
             console.log(e)
         }
     });
 
     router.post('/add', isLoggedIn, async function (req, res) {
-        const { barcode, name, stock, purchaseprice, sellingprice, unit, picture } = req.body
-        // console.log(unit, name, note, 'KACAU')
+        const { barcode, name, stock, purchaseprice, sellingprice, unit } = req.body
 
         try {
-            const { rows } = await db.query('INSERT INTO goods(barcode, name, stock, purchaseprice, sellingprice, unit, picture) VALUES ($1, $2, $3, $4, $5, $6, $7)', [barcode, name, stock, purchaseprice, sellingprice, unit, picture])
-            // const { rows } = await db.query('SELECT unit, name FROM units ORDER BY unit', [])
-            // console.log(rows, 'LOKAL')
-            res.redirect('/goods', {
-                goods: rows
-            })
+            if (!req.files || Object.keys(req.files).length === 0) {
+                return res.status(400).send('No files were uploaded.');
+            }
+
+            // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
+            let picture = req.files.picture;
+            let pictureName = `${Date.now()}-${picture.name}`
+            let uploadPath = path.join(__dirname, '..', 'public', 'images', 'upload', pictureName);
+            console.log(uploadPath, 'ada')
+            // Use the mv() method to place the file somewhere on your server
+            picture.mv(uploadPath, async function (err) {
+                if (err)
+                    return res.status(500).send(err);
+
+                const { rows } = await db.query('INSERT INTO goods(barcode, name, stock, purchaseprice, sellingprice, unit, picture) VALUES ($1, $2, $3, $4, $5, $6, $7)', [barcode, name, stock, purchaseprice, sellingprice, unit, pictureName])
+                res.redirect('/goods')
+            });
 
         }
 
-
-        
         catch (e) {
             res.send(e)
         }
     });
-//upload file
-    // router.post('/upload', function(req, res) {
-    //     let fileName = req.body,fileNamefileName;
-    //     let sampleFile;
-    //     let uploadPath;
-      
-    //     if (!req.files || Object.keys(req.files).length === 0) {
-    //       return res.status(400).send('No files were uploaded.');
-    //     }
-      
-    //     // The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
-    //     sampleFile = req.files.sampleFile;
-    //     uploadPath = path.join( __dirname,'..','views','goods','upload', `${Date.now()}-${sampleFile.name}`);
-      
-    //     // Use the mv() method to place the file somewhere on your server
-    //     sampleFile.mv(uploadPath, function(err) {
-    //       if (err)
-    //         return res.status(500).send(err);
-      
-    //       res.send('File uploaded!');
-    //     });
-    //   });
 
 
+    router.get('/delete/:barcode', async function (req, res) {
+        const barcode = req.params.barcode
+
+        try {
+            const { rows } = await db.query('DELETE FROM goods WHERE barcode = $1', [barcode])
+            // console.log(rows)
+            res.redirect('/goods')
+        }
+        catch (e) {
+            console.log(e)
+            res.send(e)
+        }
+    })
+
+    router.get('/edit/:barcode', async function (req, res) {
+        const barcode = req.params.barcode
+        // console.log(unit, 'gagal ambil unit')
+        try {
+            const { rows: units } = await db.query('SELECT unit, name FROM units')
+            const { rows } = await db.query('SELECT * FROM goods WHERE barcode = $1', [barcode])
+            // console.log(rows)
+            res.render('goods/edit', {
+                currentPage: 'edit goods',
+                user: req.session.user,
+                rows,
+                units,
+                data: rows[0]
+            });
+        }
+        catch (e) {
+            console.log(e)
+        }
+
+    });
+
+
+    router.post("/edit/:barcode", async function (req, res) {
+        const barcode = req.params.barcode
+        const { name, stock, purchaseprice, sellingprice, unit} = req.body
+        console.log(req.body, 'ada aja kali')
+        try {
+            if (!req.files || Object.keys(req.files).length === 0) {
+                const { rows } = await db.query('UPDATE goods SET name= $1, stock= $2, purchaseprice= $3, sellingprice= $4, unit= $5 WHERE barcode= $6', [ name, stock, purchaseprice, sellingprice, unit, barcode])
+                res.redirect('/goods')
+                return;
+            } else {// The name of the input field (i.e. "sampleFile") is used to retrieve the uploaded file
+                const picture = req.files.picture
+                const pictureName = `${Date.now()}-${picture.name}`
+                const uploadPath = path.join(__dirname, '..', 'public', 'images', 'upload', pictureName);
+                console.log(uploadPath, 'ada')
+                // Use the mv() method to place the file somewhere on your server
+                picture.mv(uploadPath, async function (err) {
+                    if (err)
+                        return res.status(500).send(err);
+
+                    const { rows } = await db.query('UPDATE goods SET name= $1, stock= $2, purchaseprice= $3, sellingprice= $4, unit= $5, picture= $6 WHERE barcode= $7', [ name, stock, purchaseprice, sellingprice, unit, pictureName, barcode])
+                    res.redirect('/goods')
+                })
+            }
+        }
+        catch (e) {
+            console.log(e)
+        }
+    })
 
     return router;
 }
