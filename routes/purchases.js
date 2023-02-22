@@ -52,12 +52,44 @@ module.exports = function (db) {
         }
     })
 
-    router.get('/add', isLoggedIn, async function (req, res) {
-        res.render('purchases/add', {
-            user: req.session.user,
-            currentPage: 'add'
-        })
+    router.get('/add', async function (req, res) {
+        try {
+            const { rows } = await db.query('INSERT INTO purchases(totalsum) VALUES(0) returning *')
+            res.redirect(`/purchases/show/${rows[0].no_invoice}`)
+            console.log(rows);
+        }
+        catch (e) {
+            console.log(e)
+        }
+    })
+
+    // router.get('/create', isLoggedIn, async function (req, res, next) {
+    //     try {
+    //       const { rows } = await db.query('INSERT INTO purchases(totalsum) VALUES(0) returning *')
+    //       res.redirect(`/purchases/show/${rows[0].invoice}`)
+    //     } catch (error) {
+    //       console.log(error); 
+    //       res.send(error)
+    //     }
+    //   });
+    
+
+    router.get('/show/:invoice', isLoggedIn, async function (req, res) {
+   
+        try {
+            const getpurchases = await db.query('SELECT purchases.*, suppliers.* FROM purchases LEFT JOIN suppliers ON purchases.operator = suppliers.supplierid WHERE invoice = $1', [req.params.invoice])
+            res.render('purchases/add', {
+                user: req.session.user,
+                currentPage: 'add',
+                purchases: getpurchases.rows[0],
+            })
+            console.log(getpurchases.rows[0], 'harus ada')
+        }
+        catch (e) {
+            console.log(e)
+        }
+
     });
 
     return router;
-  }
+}
