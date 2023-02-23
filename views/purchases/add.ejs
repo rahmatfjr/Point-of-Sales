@@ -20,15 +20,18 @@
                     <form class="row">
                         <div class="col-md-4">
                             <label for="invoice" class="col-form-label">Invoice</label>
-                            <input type="text" class="form-control" id="invoice" name="invoice" value="<%= purchases.invoice %>" readonly>
+                            <input type="text" class="form-control" id="invoice" name="invoice"
+                                value="<%= purchases.invoice %>" readonly>
                         </div>
                         <div class="col-md-4">
                             <label for="time" class="col-form-label">Time</label>
-                            <input type="text" class="form-control" id="time" name="time" readonly>
+                            <input type="text" class="form-control" id="time" name="time" value="<%= purchases.time %>"
+                                readonly>
                         </div>
                         <div class="col-md-4">
                             <label for="operator" class="col-form-label">Operator</label>
-                            <input type="text" class="form-control" id="operator" name="operator" readonly >
+                            <input type="text" class="form-control" id="operator" name="operator"
+                                value="<%= user.name %>" readonly>
                         </div>
                     </form>
                 </div>
@@ -36,28 +39,34 @@
                 <div class="card-body">
                     <form class="row">
                         <div class="col-md-4">
-                            <label for="invoice" class="col-form-label">Goods Barcode</label>
-                            <input type="text" class="form-control" id="invoice" name="invoice">
+                            <label for="barcode" class="col-form-label">Goods Barcode</label>
+                            <select class="form-control" id="barcode" name="barcode">
+                                <% goods.forEach( item=> { %>
+                                    <option value="<%= item.barcode %>">
+                                        <%= item.barcode + '-' + item.name %>
+                                    </option>
+                                    <% }) %>
+                            </select>
                         </div>
                         <div class="col-md-4">
-                            <label for="time" class="col-form-label">Goods Name</label>
-                            <input type="text" class="form-control" id="time" name="time" readonly>
+                            <label for="goodsname" class="col-form-label">Goods Name</label>
+                            <input type="text" class="form-control" id="goodsname" name="goodsname" readonly>
                         </div>
                         <div class="col-md-4">
-                            <label for="operator" class="col-form-label">Stock</label>
-                            <input type="text" class="form-control" id="operator" name="operator" readonly>
+                            <label for="stock" class="col-form-label">Stock</label>
+                            <input type="text" class="form-control" id="stock" name="stock" readonly>
                         </div>
                         <div class="col-md-4">
-                            <label for="invoice" class="col-form-label">Purchases Price</label>
-                            <input type="text" class="form-control" id="invoice" name="invoice">
+                            <label for="purchaseprice" class="col-form-label">Purchases Price</label>
+                            <input type="text" class="form-control" id="purchaseprice" name="purchaseprice">
                         </div>
                         <div class="col-md-4">
-                            <label for="invoice" class="col-form-label">Qty</label>
-                            <input type="text" class="form-control" id="invoice" name="invoice">
+                            <label for="quantity" class="col-form-label">Qty</label>
+                            <input type="text" class="form-control" id="quantity" name="quantity">
                         </div>
                         <div class="col-md-4">
-                            <label for="invoice" class="col-form-label">Total Price</label>
-                            <input type="text" class="form-control" id="invoice" name="invoice">
+                            <label for="totalprice" class="col-form-label">Total Price</label>
+                            <input type="text" class="form-control" id="totalprice" name="totalprice">
                         </div>
                     </form>
                 </div>
@@ -116,5 +125,25 @@
 
         </div>
         <!-- End of Main Content -->
+
+        <script>
+            let invoice = `<%= purchases.invoice%>`
+
+            $(document).ready(function () {
+                readDetails()
+                $('#barcode').change(function () {
+                    const barcode = $(this).val()
+                    $.get(`/purchases/goods/${barcode}`).done(function (data) {
+                        $('#goodsname').val(data.name)
+                        $('#stock').val(data.stock)
+                        $('#purchaseprice').val(data.purchaseprice)
+                        $('#quantity').val(0)
+                        $('#totalprice').val()
+
+                    })
+                })
+            })
+
+        </script>
 
         <%- include('../partials/footer') %>

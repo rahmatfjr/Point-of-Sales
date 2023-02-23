@@ -55,7 +55,7 @@ module.exports = function (db) {
     router.get('/add', async function (req, res) {
         try {
             const { rows } = await db.query('INSERT INTO purchases(totalsum) VALUES(0) returning *')
-            res.redirect(`/purchases/show/${rows[0].no_invoice}`)
+            res.redirect(`/purchases/show/${rows[0].invoice}`)
             console.log(rows);
         }
         catch (e) {
@@ -63,25 +63,18 @@ module.exports = function (db) {
         }
     })
 
-    // router.get('/create', isLoggedIn, async function (req, res, next) {
-    //     try {
-    //       const { rows } = await db.query('INSERT INTO purchases(totalsum) VALUES(0) returning *')
-    //       res.redirect(`/purchases/show/${rows[0].invoice}`)
-    //     } catch (error) {
-    //       console.log(error); 
-    //       res.send(error)
-    //     }
-    //   });
-    
-
     router.get('/show/:invoice', isLoggedIn, async function (req, res) {
    
         try {
             const getpurchases = await db.query('SELECT purchases.*, suppliers.* FROM purchases LEFT JOIN suppliers ON purchases.operator = suppliers.supplierid WHERE invoice = $1', [req.params.invoice])
+            const { rows: suppliers } = await db.query('SELECT * FROM suppliers ORDER BY supplierid')
+            const { rows: goods } = await db.query('SELECT * FROM goods ORDER BY barcode')
             res.render('purchases/add', {
                 user: req.session.user,
                 currentPage: 'add',
                 purchases: getpurchases.rows[0],
+                suppliers: suppliers.rows,
+                goods
             })
             console.log(getpurchases.rows[0], 'harus ada')
         }
@@ -90,6 +83,8 @@ module.exports = function (db) {
         }
 
     });
+
+
 
     return router;
 }

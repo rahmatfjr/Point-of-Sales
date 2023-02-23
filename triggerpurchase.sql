@@ -16,10 +16,9 @@ CREATE OR REPLACE FUNCTION update_purchase() RETURNS TRIGGER AS $set_purchase$
             UPDATE goods SET stock = stock_lama - NEW.quantity WHERE barcode = NEW.barcode;
         
         END IF;
-         SELECT sum(totalprice) INTO sum_harga FROM purchaseitems WHERE no_invoice = NEW.no_invoice;
-        UPDATE purchase SET totalprice = sum_harga WHERE purchase.no_invoice = NEW.no_invoice;
+         SELECT sum(totalprice) INTO sum_harga FROM purchaseitems WHERE invoice = NEW.invoice;
+        UPDATE purchase SET totalprice = sum_harga WHERE purchase.invoice = NEW.invoice;
         RETURN NULL;
-
     END;
 $set_purchase$ LANGUAGE plpgsql;
 
