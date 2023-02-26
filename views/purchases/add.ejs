@@ -37,7 +37,7 @@
                 </div>
                 <hr>
                 <div class="card-body">
-                    <form class="row">
+                    <form class="row" id="detail-form">
                         <div class="col-md-4">
                             <label for="barcode" class="col-form-label">Goods Barcode</label>
                             <select class="form-control" id="barcode" name="barcode">
@@ -68,56 +68,85 @@
                             <label for="totalprice" class="col-form-label">Total Price</label>
                             <input type="text" class="form-control" id="totalprice" name="totalprice">
                         </div>
+
+                        <div class="col-md-4">
+                            <br>
+                            <button type="submit" class="btn btn-primary btn-icon-split">
+                                <span class="icon text-white-50">
+                                    <i class="fas fa-plus"></i>
+                                </span>
+                                <span class="text">Add</span>
+                            </button>
+                        </div>
+
                     </form>
                 </div>
 
-                <div class="table">
-                    <table class="table">
+                <form action="" method="post" id="form-purchases">
+                    <div class="list-group-item">
+                        <div class="table-responsive">
+                            <table class="table table-hover" id="detail-table" width="100%" cellspacing="0">
 
-                        <thead>
-                            <tr>
-                                <th>No</th>
-                                <th>Barcode</th>
-                                <th>Name</th>
-                                <th>Qty</th>
-                                <th>Price</th>
-                                <th>Total Price</th>
-                            </tr>
-                        </thead>
-                    </table>
-                </div>
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Barcode</th>
+                                        <th>Name</th>
+                                        <th>Qty</th>
+                                        <th>Price</th>
+                                        <th>Total Price</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="table-tbody">
+                                </tbody>
 
-                <div class="card-body">
-                    <div class="table">
-                        <div class="mb-3 row">
-                            <label for="unit" class="col-sm-2 col-form-label">Total Summary</label>
-                            <div class="col-sm-10">
-                                <input type="text" class="form-control" id="unit" name="unit" readonly>
-                            </div>
+                            </table>
                         </div>
-                        <div class="mb-3 row">
-                            <label for="unit" class="col-sm-2 col-form-label">Supplier</label>
-                            <div class="col-sm-10">
-                                <input type="text" class="form-control" id="unit" name="unit">
+                    </div>
+                    <div class="card-body">
+                        <div class="table">
+                            <div class="mb-3 row">
+                                <label for="totalsummary" class="col-sm-2 col-form-label">Total Summary</label>
+                                <div class="col-sm-10">
+                                    <input type="text" class="form-control" id="totalsummary" name="totalsummary"
+                                        value="<%= purchases.totalsum %>" readonly>
+                                </div>
+                            </div>
+                            <div class="mb-3 row">
+                                <label for="supplier" class="col-sm-2 col-form-label">Supplier</label>
+                                <div class="col-sm-10">
+                                    <select class="form-control" id="supplier" name="supplier">
+                                        <option value="" selected disable hidden>
+                                            <%= purchases.name ? purchases.name : 'choose a supplier' %>
+                                        </option>
+                                        <% suppliers.forEach(item=> {%>
+                                            <option value="<%= item.supplierid%>">
+                                                <%= item.name%>
+                                            </option>
+                                            <% })%>
+                                    </select>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="card-footer py-3">
-                    <button type="submit" class="btn btn-info btn-icon-split">
-                        <span class="icon">
-                            <i class="fas fa-save"></i>
-                        </span>
-                        <span class="text">Save</span>
-                    </button>
-                    <a href="/units" class="btn btn-warning btn-icon-split">
-                        <span class="icon">
-                            <i class="fas fa-undo-alt"></i>
-                        </span>
-                        <span class="text">Back</span>
-                    </a>
-                </div>
+
+                    <div class="card-footer py-3">
+                        <button type="submit" class="btn btn-info btn-icon-split">
+                            <span class="icon">
+                                <i class="fas fa-save"></i>
+                            </span>
+                            <span class="text">Save</span>
+                        </button>
+                        <a href="/units" class="btn btn-warning btn-icon-split">
+                            <span class="icon">
+                                <i class="fas fa-undo-alt"></i>
+                            </span>
+                            <span class="text">Back</span>
+                        </a>
+                    </div>
+                </form>
             </div>
         </div>
         <!-- /.container-fluid -->
@@ -127,7 +156,8 @@
         <!-- End of Main Content -->
 
         <script>
-            let invoice = `<%= purchases.invoice%>`
+            let invoice = `<%= purchases.invoice %>`
+
 
             $(document).ready(function () {
                 readDetails()
@@ -139,17 +169,63 @@
                         $('#purchaseprice').val(data.purchaseprice)
                         $('#quantity').val(0)
                         $('#totalprice').val()
-
+                    })
+                })
+                $('#quantity').keyup(function () {
+                    const quantity = $(this).val()
+                    const totalprice = $(`#purchaseprice`).val()
+                    $('#totalprice').val(totalprice * quantity)
+                })
+                $('#detail-form').submit(function (e) {
+                    e.preventDefault();
+                    const barcode = $('#barcode').val()
+                    const quantity = $('#quantity').val()
+                    $.post('/purchases/additem', { invoice, barcode, quantity }).done(function (data) {
+                        readDetails()
+                        $('#totalsummary').val(data.totalsum)
                     })
                 })
             })
 
             const readDetails = () => {
-                $.get(`/purchases/details/${invoice}`).done(function(data){
-                      let html = ''
-                     data 
+                $.get(`/purchases/details/${invoice}`).done(function (data) {
+                    let html = ''
+                    data.forEach((item, index) => {
+                        html += `
+                        <tr>
+                           <td> ${item.id} </td>
+                           <td> ${item.itemcode} </td>
+                           <td> ${item.name} </td>
+                           <td> ${item.quantity} </td>
+                           <td> ${currencyFormatter.format(item.purchaseprice)} </td>
+                           <td> ${currencyFormatter.format(item.totalprice)} </td>
+                           <td> 
+                            <a href="#" class="btn btn-circle btn-danger" data-toggle="modal" data-target="#modalDelete${item.id}"> <i class=" fas fa-solid fa-trash"></i></a>
+                            <div class="modal fade" id="modalDelete${item.id}" tabindex="-1" role="dialog"
+                                                aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog" role="document">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="exampleModalLabel">Deleted Confirmation</h5>
+                                                            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                                                                <span aria-hidden="true">×\</span>
+                                                            </button>
+                                                        </div>
+                                                        <div class="modal-body">Are you sure, you want delete it?</div>
+                                                        <div class="modal-footer">
+                                                            <button class="btn btn-secondary" type="button" data-dismiss="modal">No</button>
+                                                            <a class="btn btn-primary" href="/purchases/deleteitems/${item.id}">Yes</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                             </td>
+                        </tr>
+                        `
+                    })
+                    $('#table-tbody').html(html)
                 })
-                }
+            }
 
         </script>
 
