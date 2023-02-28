@@ -1,18 +1,19 @@
 var express = require('express');
 const { isLoggedIn } = require('../helpers/utils');
 var router = express.Router();
-// const moment = require('moment')
+const { currencyFormatter } = require('../public/javascripts/utils');
+const moment = require('moment')
 
 module.exports = function (db) {
 
     router.get('/', async function (req, res) {
         try {
             const { rows } = await db.query('SELECT * FROM purchases')
+            
             res.render('purchases/list', {
                 currentPage: 'purchases',
                 user: req.session.user,
                 rows,
-                // moment
             })
         }
         catch (e) {
@@ -37,7 +38,7 @@ module.exports = function (db) {
             const sortMode = req.query.order[0].dir
 
             const total = await db.query(`select count(*) as total from purchases${params.length > 0 ? ` where ${params.join(' or ')}` : ''}`)
-            const data = await db.query(`select * from purchases${params.length > 0 ? ` where ${params.join(' or ')}` : ''} order by ${sortBy} ${sortMode} limit ${limit} offset ${offset} `)
+            const data = await db.query(`select purchases.*, suppliers.* from purchases left join suppliers on purchases.supplier = suppliers.supplierid${params.length > 0 ? ` where ${params.join(' or ')}` : ''} order by ${sortBy} ${sortMode} limit ${limit} offset ${offset} `)
             // console.log(data, 'ada data')
             const response = {
                 "draw": Number(req.query.draw),
@@ -74,9 +75,10 @@ module.exports = function (db) {
                 currentPage: 'add',
                 purchases: getpurchases.rows[0],
                 suppliers: getsupplier.rows,
-                goods
+                goods,
+                moment
             })
-            console.log(getpurchases.rows[0], 'harus ada')
+            // console.log(getpurchases.rows[0], 'harus ada')
         }
         catch (e) {
             console.log(e)
@@ -118,7 +120,6 @@ module.exports = function (db) {
         }
     });
 
-
     router.post('/show/:invoice', isLoggedIn, async function (req, res) {
         const invoice = req.params.invoice
         const { totalsummary, supplier } = req.body
@@ -151,6 +152,20 @@ module.exports = function (db) {
         }
     });
     
+
+    router.get('/delete/:invoice', async function (req, res) {
+        const invoice = req.params.invoice
+
+        try {
+            const { rows } = await db.query('DELETE FROM purchases WHERE invoice = $1', [invoice])
+            // console.log(rows)
+            res.redirect('/purchases')
+        }
+        catch (e) {
+            console.log(e)
+            res.send(e)
+        }
+    })
 
     return router;
 }
