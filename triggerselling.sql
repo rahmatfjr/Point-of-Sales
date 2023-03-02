@@ -31,19 +31,15 @@ CREATE TRIGGER set_sales
 AFTER INSERT OR UPDATE OR DELETE ON saleitems
     FOR EACH ROW EXECUTE FUNCTION update_sales();
 
-
 --update total harga
 CREATE OR REPLACE FUNCTION update_price_sales() RETURNS TRIGGER AS $set_total_price$
     DECLARE 
     total_price_sale NUMERIC;
     BEGIN
-        SELECT saleprice INTO total_price_sale FROM goods WHERE barcode = NEW.itemcode;
-        NEW.saleprice := total_price_sale;
-        NEW.totalprice := NEW.quantity * NEW.saleprice;
+        SELECT  INTO total_price_sale FROM goods WHERE barcode = NEW.itemcode;
+        NEW.sellingprice := total_price_sale;
+        NEW.totalprice := NEW.quantity * NEW.sellingprice;
         RETURN NEW;
     END;
 $set_total_price$ LANGUAGE plpgsql;
-
-CREATE TRIGGER set_total_price
-BEFORE INSERT OR UPDATE ON saleitems
-    FOR EACH ROW EXECUTE FUNCTION update_price_sales();
+    FOR EACH ROW EXECUTE FUNCTION update_sales();

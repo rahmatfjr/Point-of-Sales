@@ -9,7 +9,7 @@ module.exports = function (db) {
     router.get('/', async function (req, res) {
         try {
             const { rows } = await db.query('SELECT * FROM sales')
-            
+
             res.render('sales/list', {
                 currentPage: 'sales',
                 user: req.session.user,
@@ -86,11 +86,28 @@ module.exports = function (db) {
 
     });
 
+
+    router.post('/additem', isLoggedIn, async function (req, res) {
+        const { invoice, barcode, quantity } = req.body
+
+        try {
+            await db.query(`INSERT INTO saleitems (invoice, itemcode, quantity) VALUES($1, $2, $3) returning *`, [invoice, barcode, quantity])
+            const { rows } = await db.query('SELECT * FROM sales WHERE invoice = $1', [invoice])
+            console.log(rows, 'ini rows add items')
+            res.json(rows[0])
+        } catch (error) {
+            console.log(error);
+            res.send(error)
+        }
+    });
+
+
     router.get('/details/:invoice', isLoggedIn, async function (req, res) {
         const invoice = req.params.invoice
         try {
             const { rows } = await db.query(`SELECT saleitems.* , goods.name FROM saleitems LEFT JOIN goods ON saleitems.itemcode = goods.barcode WHERE saleitems.invoice = $1 ORDER BY saleitems.id`, [invoice])
             res.json(rows)
+            console.log(rows, 'ini detail invoice')
         } catch (error) {
             console.log(error);
             res.send(error)
@@ -139,19 +156,8 @@ module.exports = function (db) {
         }
     });
 
-    router.post('/additem', isLoggedIn, async function (req, res) {
-        const { invoice, barcode, quantity } = req.body
 
-        try {
-            await db.query(`INSERT INTO saleitems (invoice, itemcode, quantity) VALUES($1, $2, $3) returning *`, [invoice,barcode, quantity])
-            const { rows } = await db.query('SELECT * FROM sales WHERE invoice = $1', [invoice])
-            res.json(rows[0])
-        } catch (error) {
-            console.log(error);
-            res.send(error)
-        }
-    });
-    
+
 
     router.get('/delete/:invoice', async function (req, res) {
         const invoice = req.params.invoice

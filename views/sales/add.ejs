@@ -57,8 +57,8 @@
                             <input type="text" class="form-control" id="stock" name="stock" readonly>
                         </div>
                         <div class="col-md-4">
-                            <label for="saleprice" class="col-form-label">Sales Price</label>
-                            <input type="text" class="form-control" id="saleprice" name="saleprice">
+                            <label for="sellingprice" class="col-form-label">Sales Price</label>
+                            <input type="text" class="form-control" id="sellingprice" name="sellingprice">
                         </div>
                         <div class="col-md-4">
                             <label for="quantity" class="col-form-label">Qty</label>
@@ -178,16 +178,18 @@
                 $('#barcode').change(function () {
                     const barcode = $(this).val()
                     $.get(`/sales/goods/${barcode}`).done(function (data) {
+                        console.log(data, 'data sebelum' )
                         $('#goodsname').val(data.name)
                         $('#stock').val(data.stock)
-                        $('#saleprice').val(data.saleprice)
+                        $('#sellingprice').val(data.sellingprice)
                         $('#quantity').val(0)
                         $('#totalprice').val()
                     })
                 })
                 $('#quantity').keyup(function () {
-                    const quantity = $(this).val()
-                    const totalprice = $(`#saleprice`).val()
+                    const quantity = $('#quantity').val()
+                    // console.log(quantity, 'ini waktu keyup')
+                    const totalprice = $(`#sellingprice`).val()
                     $('#totalprice').val(totalprice * quantity)
                 })
                 $('#detail-form').submit(function (e) {
@@ -196,6 +198,7 @@
                     const quantity = $('#quantity').val()
                     $.post('/sales/additem', { invoice, barcode, quantity }).done(function (data) {
                         readDetails()
+                        // console.log(data,'data sesudsh')
                         $('#totalsummary').val(data.totalsum)
                     })
                 })
@@ -211,7 +214,7 @@
                            <td> ${item.itemcode} </td>
                            <td> ${item.name} </td>
                            <td> ${item.quantity} </td>
-                           <td> ${money.currencyFormatter.format(item.saleprice)} </td>
+                           <td> ${money.currencyFormatter.format(item.sellingprice)} </td>
                            <td> ${money.currencyFormatter.format(item.totalprice)} </td>
                            <td> 
                             <a href="#" class="btn btn-circle btn-danger" data-toggle="modal" data-target="#modalDelete${item.id}"> <i class=" fas fa-solid fa-trash"></i></a>
@@ -237,6 +240,7 @@
                         </tr>
                         `
                     })
+                    // console.log(data,'setelah add')
                     $('#table-tbody').html(html)
                 })
             }
