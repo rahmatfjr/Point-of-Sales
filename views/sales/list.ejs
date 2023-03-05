@@ -78,8 +78,18 @@
                                 return `${money.currencyFormatter.format(data)}`
                             }
                         },
-                        { "data": "pay" },
-                        { "data": "change" },
+                        {
+                            "data": "pay",
+                            render: function (data) {
+                                return `${currencyFormatter.format(data)}`
+                            }
+                        },
+                        {
+                            "data": "change",
+                            render: function (data) {
+                                return `${currencyFormatter.format(data)}`
+                            }
+                        }, ,
                         { "data": "costumer" },
                         {
                             "data": "invoice",

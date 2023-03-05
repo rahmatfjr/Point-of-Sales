@@ -178,7 +178,7 @@
                 $('#barcode').change(function () {
                     const barcode = $(this).val()
                     $.get(`/sales/goods/${barcode}`).done(function (data) {
-                        console.log(data, 'data sebelum' )
+                        console.log(data.sellingprice, 'data sebelum' )
                         $('#goodsname').val(data.name)
                         $('#stock').val(data.stock)
                         $('#sellingprice').val(data.sellingprice)
@@ -193,10 +193,13 @@
                     $('#totalprice').val(totalprice * quantity)
                 })
                 $('#detail-form').submit(function (e) {
+                    
                     e.preventDefault();
                     const barcode = $('#barcode').val()
                     const quantity = $('#quantity').val()
+                    console.log(barcode, quantity, invoice, 'detail form')
                     $.post('/sales/additem', { invoice, barcode, quantity }).done(function (data) {
+                        console.log(data, 'post')
                         readDetails()
                         // console.log(data,'data sesudsh')
                         $('#totalsummary').val(data.totalsum)
@@ -208,6 +211,7 @@
                 $.get(`/sales/details/${invoice}`).done(function (data) {
                     let html = ''
                     data.forEach((item, index) => {
+                        console.log(data.sellingprice,'data sale')
                         html += `
                         <tr>
                            <td> ${item.id} </td>

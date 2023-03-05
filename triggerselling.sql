@@ -36,10 +36,12 @@ CREATE OR REPLACE FUNCTION update_price_sales() RETURNS TRIGGER AS $set_total_pr
     DECLARE 
     total_price_sale NUMERIC;
     BEGIN
-        SELECT  INTO total_price_sale FROM goods WHERE barcode = NEW.itemcode;
+        SELECT sellingprice INTO total_price_sale FROM goods WHERE barcode = NEW.itemcode;
         NEW.sellingprice := total_price_sale;
         NEW.totalprice := NEW.quantity * NEW.sellingprice;
         RETURN NEW;
     END;
 $set_total_price$ LANGUAGE plpgsql;
-    FOR EACH ROW EXECUTE FUNCTION update_sales();
+    CREATE TRIGGER set_total_price
+BEFORE INSERT OR UPDATE ON saleitems
+    FOR EACH ROW EXECUTE FUNCTION update_price_sales();
