@@ -113,29 +113,30 @@
                                         value="<%= sales.totalsum %>" readonly>
                                 </div>
                             </div>
-                            <div class="mb-3 row">
-                                <label for="pay" class="col-sm-2 col-form-label">pay</label>
+                            <div class="row mb-3">
+                                <label for="pay" class="col-sm-2 col-form-label">Pay</label>
                                 <div class="col-sm-10">
-                                    <input type="text" class="form-control" id="pay" name="pay"
-                                        value="<%= sales.totalsum %>">
+                                    <input type="text" class="form-control" id="pay" name="pay" value="<%= sales.pay %>"
+                                        required>
                                 </div>
                             </div>
-                            <div class="mb-3 row">
+
+                            <div class="row mb-3">
                                 <label for="change" class="col-sm-2 col-form-label">Change</label>
                                 <div class="col-sm-10">
                                     <input type="text" class="form-control" id="change" name="change"
-                                        value="<%= sales.totalsum %>" readonly>
+                                        value="<%= sales.change %>" readonly>
                                 </div>
                             </div>
                             <div class="mb-3 row">
-                                <label for="costumer" class="col-sm-2 col-form-label">Costumer</label>
+                                <label for="customer" class="col-sm-2 col-form-label">Customer</label>
                                 <div class="col-sm-10">
-                                    <select class="form-control" id="costumer" name="costumer">
+                                    <select class="form-control" id="customer" name="customer">
                                         <option value="" selected disable hidden>
-                                            <%= sales.name ? sales.name : 'choose a costumer' %>
+                                            <%= sales.name ? sales.name : 'choose a customer' %>
                                         </option>
-                                        <% costumers.forEach(item=> {%>
-                                            <option value="<%= item.costumerid%>">
+                                        <% customers.forEach(item=> {%>
+                                            <option value="<%= item.customerid%>">
                                                 <%= item.name%>
                                             </option>
                                             <% })%>
@@ -171,14 +172,11 @@
 
         <script>
             let invoice = `<%= sales.invoice %>`
-
-
             $(document).ready(function () {
                 readDetails()
                 $('#barcode').change(function () {
                     const barcode = $(this).val()
                     $.get(`/sales/goods/${barcode}`).done(function (data) {
-                        console.log(data.sellingprice, 'data sebelum' )
                         $('#goodsname').val(data.name)
                         $('#stock').val(data.stock)
                         $('#sellingprice').val(data.sellingprice)
@@ -187,31 +185,32 @@
                     })
                 })
                 $('#quantity').keyup(function () {
-                    const quantity = $('#quantity').val()
-                    // console.log(quantity, 'ini waktu keyup')
+                    const quantity = $(this).val()
                     const totalprice = $(`#sellingprice`).val()
                     $('#totalprice').val(totalprice * quantity)
                 })
+                $('#pay').keyup(function () {
+                    const pay = $(this).val()
+                    const totalsummary = $(`#totalsummary`).val()
+                    console.log(pay, 'ini form add pay')
+                    $('#change').val(pay - totalsummary)
+                })
                 $('#detail-form').submit(function (e) {
-                    
                     e.preventDefault();
                     const barcode = $('#barcode').val()
                     const quantity = $('#quantity').val()
-                    console.log(barcode, quantity, invoice, 'detail form')
                     $.post('/sales/additem', { invoice, barcode, quantity }).done(function (data) {
-                        console.log(data, 'post')
                         readDetails()
-                        // console.log(data,'data sesudsh')
                         $('#totalsummary').val(data.totalsum)
                     })
                 })
             })
 
+
             const readDetails = () => {
                 $.get(`/sales/details/${invoice}`).done(function (data) {
                     let html = ''
                     data.forEach((item, index) => {
-                        console.log(data.sellingprice,'data sale')
                         html += `
                         <tr>
                            <td> ${item.id} </td>
@@ -244,7 +243,6 @@
                         </tr>
                         `
                     })
-                    // console.log(data,'setelah add')
                     $('#table-tbody').html(html)
                 })
             }

@@ -5,9 +5,9 @@
         <div class="container-fluid">
 
             <!-- Page Heading -->
-            <h1 class="h3 mb-2 text-gray-800">Purchases</h1>
+            <h1 class="h3 mb-2 text-gray-800">Sales</h1>
             <div class="d-sm-flex align-items-center justify-content-between mb-4">
-                <span>this is data of Purchases</span>
+                <span>this is data of Sales</span>
             </div>
 
             <!-- DataTales Example -->
@@ -31,7 +31,7 @@
                                     <th>Total Summary</th>
                                     <th>Pay</th>
                                     <th>Change</th>
-                                    <th>Costumer</th>
+                                    <th>Customer</th>
                                     <th>Actions</th>
                                 </tr>
                             </thead>
@@ -41,8 +41,8 @@
                                     <th>Time</th>
                                     <th>Total Summary</th>
                                     <th>Pay</th>
-                                    <th>Change</th>
-                                    <th>Costumer</th>
+                                  <th>Change</th>
+                                    <th>Customer</th>
                                     <th>Actions</th>
                                 </tr>
                             </tfoot>
@@ -81,16 +81,16 @@
                         {
                             "data": "pay",
                             render: function (data) {
-                                return `${currencyFormatter.format(data)}`
+                                return `${money.currencyFormatter.format(data)}`
                             }
                         },
                         {
                             "data": "change",
                             render: function (data) {
-                                return `${currencyFormatter.format(data)}`
+                                return `${money.currencyFormatter.format(data)}`
                             }
-                        }, ,
-                        { "data": "costumer" },
+                        },
+                        { "data": "name" },
                         {
                             "data": "invoice",
                             render: function (data, type) {

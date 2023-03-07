@@ -6,9 +6,9 @@ module.exports = function (db) {
 
     router.get('/', async function (req, res) {
         try {
-            const { rows } = await db.query('SELECT * FROM costumers')
-            res.render('costumers/list', {
-                currentPage: 'costumers',
+            const { rows } = await db.query('SELECT * FROM customers')
+            res.render('customers/list', {
+                currentPage: 'customers',
                 user: req.session.user,
                 rows
             })
@@ -22,7 +22,7 @@ module.exports = function (db) {
 
     
     //read data
-    router.get('/datatablecostumer', async (req, res) => {
+    router.get('/datatablecustomer', async (req, res) => {
         try {
             // console.log('masuk sini')
             let params = []
@@ -36,8 +36,8 @@ module.exports = function (db) {
             const sortBy = req.query.columns[req.query.order[0].column].data
             const sortMode = req.query.order[0].dir
 
-            const total = await db.query(`select count(*) as total from costumers${params.length > 0 ? ` where ${params.join(' or ')}` : ''}`)
-            const data = await db.query(`select * from costumers${params.length > 0 ? ` where ${params.join(' or ')}` : ''} order by ${sortBy} ${sortMode} limit ${limit} offset ${offset} `)
+            const total = await db.query(`select count(*) as total from customers${params.length > 0 ? ` where ${params.join(' or ')}` : ''}`)
+            const data = await db.query(`select * from customers${params.length > 0 ? ` where ${params.join(' or ')}` : ''} order by ${sortBy} ${sortMode} limit ${limit} offset ${offset} `)
             // console.log(data, 'ada data')
             const response = {
                 "draw": Number(req.query.draw),
@@ -54,9 +54,9 @@ module.exports = function (db) {
 
 
 
-    //add costumers
+    //add customers
     router.get('/add', isLoggedIn, async function (req, res) {
-        res.render('costumers/add', {
+        res.render('customers/add', {
             user: req.session.user,
             currentPage: 'add'
         })
@@ -67,9 +67,9 @@ module.exports = function (db) {
         // console.log(unit, name, note)
 
         try {
-            const { rows } = await db.query('INSERT INTO costumers( name, address, phone) VALUES ($1, $2, $3)',  [ name, address, phone])
+            const { rows } = await db.query('INSERT INTO customers( name, address, phone) VALUES ($1, $2, $3)',  [ name, address, phone])
             // console.log(rows)
-            res.redirect('/costumers')
+            res.redirect('/customers')
             // console.log(rows);
         }
         catch (e) {
@@ -77,14 +77,14 @@ module.exports = function (db) {
         }
     });
 
-    router.get('/edit/:costumerid', async function (req, res) {
-        const costumerid = req.params.costumerid
+    router.get('/edit/:customerid', async function (req, res) {
+        const customerid = req.params.customerid
         // console.log(unit, 'gagal ambil unit')
         try {
-          const { rows } = await db.query('SELECT * FROM costumers WHERE costumerid = $1', [costumerid])
+          const { rows } = await db.query('SELECT * FROM customers WHERE customerid = $1', [customerid])
           // console.log(rows)
-          res.render('costumers/edit', {
-            currentPage: 'edit costumers',
+          res.render('customers/edit', {
+            currentPage: 'edit customers',
             user: req.session.user,
             rows
           });
@@ -95,13 +95,13 @@ module.exports = function (db) {
     
       });
     
-      router.post("/edit/:costumerid", async function (req, res) {
-        const costumerid = req.params.costumerid
+      router.post("/edit/:customerid", async function (req, res) {
+        const customerid = req.params.customerid
         const { name, address, phone } = req.body
         try {
-          const { rows } = await db.query('UPDATE costumers SET name= $1, address= $2, phone= $3  WHERE costumerid= $4',[ name, address, phone, costumerid])
+          const { rows } = await db.query('UPDATE customers SET name= $1, address= $2, phone= $3  WHERE customerid= $4',[ name, address, phone, customerid])
         //   console.log(rows, 'udh di ubah');
-          res.redirect('/costumers')
+          res.redirect('/customers')
         }
         catch (e) {
           console.log(e)
@@ -109,13 +109,13 @@ module.exports = function (db) {
       })
 
 
-      router.get('/delete/:costumerid', async function (req, res) {
-        const costumerid = req.params.costumerid
+      router.get('/delete/:customerid', async function (req, res) {
+        const customerid = req.params.customerid
     
         try {
-          const { rows } = await db.query('DELETE FROM costumers WHERE costumerid = $1', [costumerid])
+          const { rows } = await db.query('DELETE FROM customers WHERE customerid = $1', [customerid])
           // console.log(rows)
-          res.redirect('/costumers')
+          res.redirect('/customers')
         }
         catch (e) {
           console.log(e)
