@@ -147,6 +147,7 @@ module.exports = function (db) {
                 console.log('ini adalah req.body ', req.body);
             } else {
                 await db.query('UPDATE sales SET totalsum = $1, customer = $2, operator = $3, pay = $4, change = $5 WHERE invoice = $6', [totalsummary, customer, userid, pay, change, invoice])
+                console.log('ini adalah req.body else ', req.body);
             }
 
             res.redirect(`/sales`)

@@ -7,7 +7,6 @@ module.exports = function (db) {
 
     router.get('/', isLoggedIn, async function (req, res) {
         try {
-
             const { rows } = await db.query('SELECT * FROM goods')
             // console.log(rows)
             res.render('goods/list', {

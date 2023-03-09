@@ -69,13 +69,10 @@
                             "data": "customerid",
                             render: function (data, type) {
                                 return `
-
                                 <a class="btn btn-success btn-circle" href="/customers/edit/${data}"><i class="far fa-edit"></i></a>
-
                                   
                                 <a class="btn btn-danger btn-circle" data-toggle="modal"
                                   data-target="#delete${data}" href="/customers/delete/${data}"><i class="fas fa-trash"></i></a>
-
                                   
                                   <div class="modal fade" id="delete${data}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                         <div class="modal-dialog" role="document">
@@ -94,7 +91,6 @@
                                             </div>
                                         </div>
                                     </div>
-
                                 `
                             }
                         },

@@ -41,7 +41,7 @@ module.exports = function (db) {
           delete data.rows[0].password
           // console.log(req.session.user);
 
-          res.redirect('/home')
+          res.redirect('/dashboard')
         });
       })
     }
@@ -80,24 +80,27 @@ module.exports = function (db) {
     })
   });
 
-
-  //router home in dashboard
-  router.get('/home', isLoggedIn, function (req, res) {
-    res.render('users/home', {
-      currentPage: 'home',
-      user: req.session.user
-
-    });
-
-  });
-
-
   //router logout
   router.get('/logout', isLoggedIn, function (req, res, next) {
     req.session.destroy(function (err) {
       res.redirect('/login')
     })
   });
+
+
+
+
+
+    //                                 //router home in dashboard (dashboard home)
+
+    // router.get('/home', isLoggedIn, function (req, res) {
+    //   res.render('users/home', {
+    //     currentPage: 'dashboard',
+    //     user: req.session.user
+  
+    //   });
+  
+    // });
 
   return router;
 }
