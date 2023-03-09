@@ -26,6 +26,7 @@ var purchasesRouter = require('./routes/purchases')(pool);
 var customersRouter = require('./routes/customers')(pool);
 var salesRouter = require('./routes/sales')(pool);
 var dashboardRouter = require('./routes/dashboard')(pool);
+// var updateRouter = require('./routes/update')(pool);
 
 
 
@@ -57,6 +58,7 @@ app.use('/purchases', purchasesRouter);
 app.use('/customers', customersRouter);
 app.use('/sales', salesRouter);
 app.use('/dashboard', dashboardRouter);
+// app.use('/update', updateRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

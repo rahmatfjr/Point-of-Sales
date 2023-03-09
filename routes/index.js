@@ -87,20 +87,5 @@ module.exports = function (db) {
     })
   });
 
-
-
-
-
-    //                                 //router home in dashboard (dashboard home)
-
-    // router.get('/home', isLoggedIn, function (req, res) {
-    //   res.render('users/home', {
-    //     currentPage: 'dashboard',
-    //     user: req.session.user
-  
-    //   });
-  
-    // });
-
   return router;
 }

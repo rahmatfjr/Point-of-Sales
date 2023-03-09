@@ -83,7 +83,7 @@ module.exports = function (db) {
     const id = req.params.users_id
     const { email, name, role } = req.body
     try {
-      const { rows } = await db.query('UPDATE users SET email= $1, name= $2, role= $3  WHERE users_id= $4',[email, name, role, id])
+      const { rows } = await db.query('UPDATE users SET email= $1, name= $2, role= $3  WHERE users_id= $4', [email, name, role, id])
       console.log(rows, 'udh di ubah');
       res.redirect('/users')
     }
@@ -123,6 +123,78 @@ module.exports = function (db) {
       console.log(e, "error")
     }
   })
+
+
+  router.get('/profile',isLoggedIn, function (req, res, next) {
+    res.render('users/profile',{
+      user: req.session.user,
+      currentPage: 'POS - Users',
+      successMessage: req.flash('successMessage'),
+      info: req.flash('info')
+    });
+  });
+
+  router.post('/profile',isLoggedIn, async function (req, res, next) {
+    try {
+      const id = req.session.user.users_id
+      const { email, name } = req.body
+      await db.query("UPDATE users SET email = $1, name = $2 WHERE users_id = $3", [email, name, id])
+
+      const {rows: dataprofile} = await db.query("SELECT * FROM users WHERE email = $1", [email])
+
+      const data = dataprofile[0]
+      req.session.user = data
+      req.flash('successMessage', 'your profile has been update')
+
+
+      res.redirect('/users/profile')
+    } catch (error) {
+      console.log(error);
+      res.send(error)
+    }
+  });
+
+
+  router.get('/change',isLoggedIn, function (req, res, next) {
+    res.render('users/change', {
+      user: req.session.user,
+      currentPage: 'Change Password - Users',
+      successMessage: req.flash('successMessage'),
+      info: req.flash('info')
+    });
+  });
+
+  router.post('/change',isLoggedIn,  async function (req, res, next) {
+    try {
+      const id = req.session.user.users_id
+      const { oldpassword, newpassword, retypepassword } = req.body
+
+      const {rows: datadb} = await db.query('SELECT * FROM users where users_id = $1', [id]);
+
+
+      const passcheck = bcrypt.compareSync(oldpassword, datadb[0].password);
+      if (!passcheck) {
+        req.flash('info', 'Old Password is Wrong')
+        return res.redirect('/users/change')
+      }
+
+      if (newpassword != retypepassword ) {
+        req.flash('info', `Retype Password is doesn't match`)
+        return res.redirect('/users/change')
+      }
+      
+      const newpass = bcrypt.hashSync(newpassword, saltRounds);
+      await db.query("UPDATE users SET password = $1 WHERE users_id = $2", [newpass, id])
+      req.flash('successMessage', `your password has been updated`)
+
+
+      res.redirect('/users/change')
+    } 
+    catch (error) {
+      console.log('changepassword error ', error);
+    }
+  });
+
 
   return router;
 }
