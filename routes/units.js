@@ -1,10 +1,10 @@
 var express = require('express');
-const { isLoggedIn } = require('../helpers/utils');
+const { isAdmin } = require('../helpers/utils')
 var router = express.Router();
 
 module.exports = function (db) {
 
-    router.get('/', async function (req, res) {
+    router.get('/', isAdmin, async function (req, res) {
         try {
             const { rows } = await db.query('SELECT * FROM units')
             res.render('units/list', {
@@ -55,14 +55,14 @@ module.exports = function (db) {
 
 
     //add units
-    router.get('/add', isLoggedIn, async function (req, res) {
+    router.get('/add', isAdmin, async function (req, res) {
         res.render('units/add', {
             user: req.session.user,
             currentPage: 'add'
         })
     });
 
-    router.post('/add', isLoggedIn, async function (req, res) {
+    router.post('/add', isAdmin, async function (req, res) {
         const { unit, name, note } = req.body
         // console.log(unit, name, note)
 
@@ -76,7 +76,7 @@ module.exports = function (db) {
         }
     });
 
-    router.get('/edit/:unit', async function (req, res) {
+    router.get('/edit/:unit', isAdmin, async function (req, res) {
         const unit = req.params.unit
         // console.log(unit, 'gagal ambil unit')
         try {
@@ -94,7 +94,7 @@ module.exports = function (db) {
     
       });
     
-      router.post("/edit/:unit", async function (req, res) {
+      router.post("/edit/:unit", isAdmin, async function (req, res) {
         const unit = req.params.unit
         const { name, note } = req.body
         try {
@@ -108,7 +108,7 @@ module.exports = function (db) {
       })
 
 
-      router.get('/delete/:unit', async function (req, res) {
+      router.get('/delete/:unit', isAdmin, async function (req, res) {
         const unit = req.params.unit
     
         try {

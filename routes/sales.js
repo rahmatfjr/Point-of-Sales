@@ -6,7 +6,7 @@ const moment = require('moment')
 
 module.exports = function (db) {
 
-    router.get('/', async function (req, res) {
+    router.get('/', isLoggedIn, async function (req, res) {
         try {
             const { rows } = await db.query('SELECT * FROM sales')
 
@@ -53,7 +53,7 @@ module.exports = function (db) {
         }
     })
 
-    router.get('/add', async function (req, res) {
+    router.get('/add', isLoggedIn, async function (req, res) {
         try {
             const { rows } = await db.query('INSERT INTO sales(totalsum) VALUES(0) returning *')
             res.redirect(`/sales/show/${rows[0].invoice}`)
@@ -160,7 +160,7 @@ module.exports = function (db) {
 
 
 
-    router.get('/delete/:invoice', async function (req, res) {
+    router.get('/delete/:invoice', isLoggedIn, async function (req, res) {
         const invoice = req.params.invoice
 
         try {

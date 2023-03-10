@@ -6,7 +6,7 @@ const saltRounds = 10;
 
 module.exports = function (db) {
 
-  router.get('/', async function (req, res) {
+  router.get('/', isLoggedIn, async function (req, res) {
     try {
         const { rows } = await db.query('SELECT * FROM suppliers')
         res.render('suppliers/list', {
@@ -71,7 +71,7 @@ router.post('/add', isLoggedIn, async function (req, res) {
   }
 });
 
-router.get('/edit/:supplierid', async function (req, res) {
+router.get('/edit/:supplierid', isLoggedIn, async function (req, res) {
     const supplierid = req.params.supplierid
     try {
       const { rows } = await db.query('SELECT * FROM suppliers WHERE supplierid = $1', [supplierid])
@@ -88,7 +88,7 @@ router.get('/edit/:supplierid', async function (req, res) {
   });
 })
 
-router.post("/edit/:supplierid", async function (req, res) {
+router.post("/edit/:supplierid", isLoggedIn, async function (req, res) {
     const supplierid = req.params.supplierid
     const { name, address, phone } = req.body
     try {
@@ -102,7 +102,7 @@ router.post("/edit/:supplierid", async function (req, res) {
   })
 
 
-  router.get('/delete/:supplierid', async function (req, res) {
+  router.get('/delete/:supplierid', isLoggedIn, async function (req, res) {
     const supplierid = req.params.supplierid
 
     try {

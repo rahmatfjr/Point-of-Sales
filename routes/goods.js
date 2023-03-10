@@ -1,11 +1,11 @@
 var express = require('express');
-const { isLoggedIn } = require('../helpers/utils');
+const { isAdmin } = require('../helpers/utils')
 var router = express.Router();
 const path = require('path')
 
 module.exports = function (db) {
 
-    router.get('/', isLoggedIn, async function (req, res) {
+    router.get('/', isAdmin, async function (req, res) {
         try {
             const { rows } = await db.query('SELECT * FROM goods')
             // console.log(rows)
@@ -52,7 +52,7 @@ module.exports = function (db) {
     })
 
     //add units
-    router.get('/add', isLoggedIn, async function (req, res) {
+    router.get('/add', isAdmin, async function (req, res) {
         try {
             const { rows } = await db.query('SELECT unit, name FROM units')
             res.render('goods/add', {
@@ -66,7 +66,7 @@ module.exports = function (db) {
         }
     });
 
-    router.post('/add', isLoggedIn, async function (req, res) {
+    router.post('/add', isAdmin, async function (req, res) {
         const { barcode, name, stock, purchaseprice, sellingprice, unit } = req.body
 
         try {
@@ -96,7 +96,7 @@ module.exports = function (db) {
     });
 
 
-    router.get('/delete/:barcode', async function (req, res) {
+    router.get('/delete/:barcode', isAdmin, async function (req, res) {
         const barcode = req.params.barcode
 
         try {
@@ -110,7 +110,7 @@ module.exports = function (db) {
         }
     })
 
-    router.get('/edit/:barcode', async function (req, res) {
+    router.get('/edit/:barcode', isAdmin, async function (req, res) {
         const barcode = req.params.barcode
         // console.log(unit, 'gagal ambil unit')
         try {
@@ -132,7 +132,7 @@ module.exports = function (db) {
     });
 
 
-    router.post("/edit/:barcode", async function (req, res) {
+    router.post("/edit/:barcode", isAdmin, async function (req, res) {
         const barcode = req.params.barcode
         const { name, stock, purchaseprice, sellingprice, unit} = req.body
         console.log(req.body, 'ada aja kali')

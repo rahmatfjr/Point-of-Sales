@@ -4,7 +4,7 @@ var router = express.Router();
 
 module.exports = function (db) {
 
-    router.get('/', async function (req, res) {
+    router.get('/', isLoggedIn, async function (req, res) {
         try {
             const { rows } = await db.query('SELECT * FROM customers')
             res.render('customers/list', {
@@ -77,7 +77,7 @@ module.exports = function (db) {
         }
     });
 
-    router.get('/edit/:customerid', async function (req, res) {
+    router.get('/edit/:customerid', isLoggedIn, async function (req, res) {
         const customerid = req.params.customerid
         // console.log(unit, 'gagal ambil unit')
         try {
@@ -95,7 +95,7 @@ module.exports = function (db) {
     
       });
     
-      router.post("/edit/:customerid", async function (req, res) {
+      router.post("/edit/:customerid", isLoggedIn, async function (req, res) {
         const customerid = req.params.customerid
         const { name, address, phone } = req.body
         try {
@@ -109,7 +109,7 @@ module.exports = function (db) {
       })
 
 
-      router.get('/delete/:customerid', async function (req, res) {
+      router.get('/delete/:customerid',isLoggedIn, async function (req, res) {
         const customerid = req.params.customerid
     
         try {

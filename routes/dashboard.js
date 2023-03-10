@@ -1,10 +1,11 @@
 var express = require('express');
 var router = express.Router();
 var currencyFormatter = require('currency-formatter');
+const { isAdmin } = require('../helpers/utils')
 
 /* GET home page. */
 module.exports = function (db) {
-    router.get('/', async function (req, res, next) {
+    router.get('/', isAdmin, async function (req, res, next) {
       try {
   
         const { rows: totalpurchases } = await db.query('SELECT sum(totalsum) AS totalpurchases FROM purchases')
@@ -56,7 +57,7 @@ module.exports = function (db) {
       }
     })
     
-    router.get('/line', async function (req, res, next) {
+    router.get('/line',isAdmin, async function (req, res, next) {
       try {
         const { startdate, enddate } = req.query
         let searchPurchase = ''
@@ -120,7 +121,7 @@ module.exports = function (db) {
       }
     })
   
-    router.get('/dougnat', async function (req, res, next) {
+    router.get('/dougnat',isAdmin, async function (req, res, next) {
       try {
         const { startdate, enddate } = req.query
   

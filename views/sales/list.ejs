@@ -125,6 +125,14 @@
                             }
                         },
                     ],
+                    "rowCallback": function( row, data ) {
+                    if ( user != data.operator ) {
+                        $('td:eq(4)', row).css({
+                            "pointer-events": "none",
+                            "opacity": "50%"
+                        });
+                    }
+                }
                 });
             });
         </script>

@@ -1,5 +1,5 @@
 var express = require('express');
-const { isLoggedIn } = require('../helpers/utils');
+const { isLoggedIn , isAdmin } = require('../helpers/utils');
 var router = express.Router();
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
@@ -7,7 +7,7 @@ const saltRounds = 10;
 module.exports = function (db) {
 
   //router user in dashboard
-  router.get('/', isLoggedIn, async function (req, res) {
+  router.get('/', isAdmin, async function (req, res) {
     try {
       const { rows } = await db.query('SELECT * FROM users')
       // console.log(rows)
@@ -24,14 +24,14 @@ module.exports = function (db) {
   });
 
   /* GET users listing. */
-  router.get('/add', isLoggedIn, async function (req, res) {
+  router.get('/add', isAdmin, async function (req, res) {
     res.render('adduser/add', {
       user: req.session.user,
       currentPage: 'add'
     })
   });
 
-  router.post('/add', isLoggedIn, async function (req, res) {
+  router.post('/add', isAdmin, async function (req, res) {
     const { email, name, password, role } = req.body
 
     try {
@@ -48,7 +48,7 @@ module.exports = function (db) {
     }
   });
 
-  router.get('/delete/:users_id', async function (req, res) {
+  router.get('/delete/:users_id', isAdmin, async function (req, res) {
     const id = req.params.users_id
 
     try {
@@ -62,7 +62,7 @@ module.exports = function (db) {
     }
   })
 
-  router.get('/edit/:users_id', async function (req, res) {
+  router.get('/edit/:users_id', isAdmin, async function (req, res) {
     const id = req.params.users_id
     try {
       const { rows } = await db.query('SELECT * FROM users WHERE users_id = $1', [id])
@@ -79,7 +79,7 @@ module.exports = function (db) {
 
   });
 
-  router.post("/edit/:users_id", async function (req, res) {
+  router.post("/edit/:users_id", isAdmin, async function (req, res) {
     const id = req.params.users_id
     const { email, name, role } = req.body
     try {
