@@ -123,7 +123,7 @@ module.exports = function (db) {
     router.post('/show/:invoice', isLoggedIn, async function (req, res) {
         const invoice = req.params.invoice
         const { totalsummary, supplier } = req.body
-        const userid = req.session.user.userid
+        const userid = req.session.user.users_id
         try {
 
             if (!supplier) {

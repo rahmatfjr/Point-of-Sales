@@ -41,7 +41,7 @@
                                     <th>Time</th>
                                     <th>Total Summary</th>
                                     <th>Pay</th>
-                                  <th>Change</th>
+                                    <th>Change</th>
                                     <th>Customer</th>
                                     <th>Actions</th>
                                 </tr>
@@ -57,7 +57,7 @@
         </div>
         <!-- /.container-fluid -->
         <script>
-            let user = "<%= user.userid %>"
+            let user = "<%= user.users_id %>"
             $(document).ready(function () {
                 $('#dataTable').DataTable({
                     "lengthMenu": [[3, 10, 100, -1], [3, 10, 100, "All"]],
@@ -125,14 +125,14 @@
                             }
                         },
                     ],
-                    "rowCallback": function( row, data ) {
-                    if ( user != data.operator ) {
-                        $('td:eq(4)', row).css({
-                            "pointer-events": "none",
-                            "opacity": "50%"
-                        });
+                    "rowCallback": function (row, data) {
+                        if (user != data.operator) {
+                            $('td:eq(6)', row).css({
+                                "pointer-events": "none",
+                                "opacity": "50%"
+                            });
+                        }
                     }
-                }
                 });
             });
         </script>
