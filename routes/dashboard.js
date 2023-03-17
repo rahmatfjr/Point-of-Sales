@@ -72,7 +72,7 @@ module.exports = function (db) {
       let total = purchasesget.concat(salesget)
       let data = {}
       let subtotal = []
-      // let month = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+      // let month = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 
 
 
