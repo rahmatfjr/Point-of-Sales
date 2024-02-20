@@ -1774,7 +1774,7 @@ pre code {
     -webkit-overflow-scrolling: touch;
   }
   .table-responsive-sm > .table-bordered {
-    border: 0;
+    border: 100%;
   }
 }
 

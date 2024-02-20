@@ -9,6 +9,7 @@
             UPDATE goods SET stock = stock_lama + NEW.quantity WHERE barcode = NEW.itemcode;
             current_invoice := NEW.invoice;
         
+        
         ELSIF (TG_OP = 'UPDATE') THEN
             SELECT stock INTO stock_lama FROM goods WHERE barcode = NEW.itemcode;
             UPDATE goods SET stock = stock_lama - OLD.quantity + NEW.quantity WHERE barcode = NEW.itemcode;
